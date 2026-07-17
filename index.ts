@@ -1,15 +1,18 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "./schema";
+import { Router } from "express";
+import healthRouter from "./health";
+import statsRouter from "./stats";
+import membershipRouter from "./membership";
+import volunteersRouter from "./volunteers";
+import contactRouter from "./contact";
+import newsletterRouter from "./newsletter";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL is not set. Please create a .env file from .env.example and fill in your database credentials.",
-  );
-}
+const router = Router();
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+router.use(healthRouter);
+router.use(statsRouter);
+router.use(membershipRouter);
+router.use(volunteersRouter);
+router.use(contactRouter);
+router.use(newsletterRouter);
 
-export const db = drizzle(pool, { schema });
-
-export * from "./schema";
+export default router;
