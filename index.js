@@ -1,87 +1,49 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateNewsletterSubscriptionResponse = exports.CreateNewsletterSubscriptionBody = exports.CreateContactMessageResponse = exports.CreateContactMessageBody = exports.CreateVolunteerApplicationResponse = exports.CreateVolunteerApplicationBody = exports.LookupMembershipResponse = exports.LookupMembershipQueryParams = exports.CreateMembershipApplicationResponse = exports.CreateMembershipApplicationBody = exports.GetStatsSummaryResponse = void 0;
-const zod_1 = require("zod");
-// ── Stats ──────────────────────────────────────────────────────────────────
-exports.GetStatsSummaryResponse = zod_1.z.object({
-    registeredMembers: zod_1.z.number(),
-    wardsCovered: zod_1.z.number(),
-    pilotProjectWomen: zod_1.z.number(),
-    commitmentPercent: zod_1.z.number(),
-});
-// ── Membership ─────────────────────────────────────────────────────────────
-exports.CreateMembershipApplicationBody = zod_1.z.object({
-    fullName: zod_1.z.string().min(1),
-    gender: zod_1.z.string().min(1),
-    phone: zod_1.z.string().min(1),
-    email: zod_1.z.string().email(),
-    state: zod_1.z.string().min(1),
-    lga: zod_1.z.string().min(1),
-    ward: zod_1.z.string().min(1),
-    occupation: zod_1.z.string().min(1),
-});
-exports.CreateMembershipApplicationResponse = zod_1.z.object({
-    id: zod_1.z.number(),
-    membershipNumber: zod_1.z.string(),
-    fullName: zod_1.z.string(),
-    gender: zod_1.z.string(),
-    phone: zod_1.z.string(),
-    email: zod_1.z.string(),
-    state: zod_1.z.string(),
-    lga: zod_1.z.string(),
-    ward: zod_1.z.string(),
-    occupation: zod_1.z.string(),
-    status: zod_1.z.string(),
-    createdAt: zod_1.z.coerce.date(),
-});
-exports.LookupMembershipQueryParams = zod_1.z.object({
-    membershipNumber: zod_1.z.string().min(1),
-});
-exports.LookupMembershipResponse = exports.CreateMembershipApplicationResponse;
-// ── Volunteers ─────────────────────────────────────────────────────────────
-exports.CreateVolunteerApplicationBody = zod_1.z.object({
-    fullName: zod_1.z.string().min(1),
-    phone: zod_1.z.string().min(1),
-    email: zod_1.z.string().email(),
-    skills: zod_1.z.string().min(1),
-    experience: zod_1.z.string().optional(),
-    availability: zod_1.z.string().min(1),
-});
-exports.CreateVolunteerApplicationResponse = zod_1.z.object({
-    id: zod_1.z.number(),
-    fullName: zod_1.z.string(),
-    phone: zod_1.z.string(),
-    email: zod_1.z.string(),
-    skills: zod_1.z.string(),
-    experience: zod_1.z.string().nullish(),
-    availability: zod_1.z.string(),
-    status: zod_1.z.string(),
-    createdAt: zod_1.z.coerce.date(),
-});
-// ── Contact ────────────────────────────────────────────────────────────────
-exports.CreateContactMessageBody = zod_1.z.object({
-    name: zod_1.z.string().min(1),
-    email: zod_1.z.string().email(),
-    phone: zod_1.z.string().optional(),
-    subject: zod_1.z.string().min(1),
-    message: zod_1.z.string().min(1),
-});
-exports.CreateContactMessageResponse = zod_1.z.object({
-    id: zod_1.z.number(),
-    name: zod_1.z.string(),
-    email: zod_1.z.string(),
-    phone: zod_1.z.string().nullish(),
-    subject: zod_1.z.string(),
-    message: zod_1.z.string(),
-    createdAt: zod_1.z.coerce.date(),
-});
-// ── Newsletter ─────────────────────────────────────────────────────────────
-exports.CreateNewsletterSubscriptionBody = zod_1.z.object({
-    email: zod_1.z.string().email(),
-});
-exports.CreateNewsletterSubscriptionResponse = zod_1.z.object({
-    id: zod_1.z.number(),
-    email: zod_1.z.string(),
-    createdAt: zod_1.z.coerce.date(),
-});
+exports.db = void 0;
+const node_postgres_1 = require("drizzle-orm/node-postgres");
+const pg_1 = require("pg");
+const schema = __importStar(require("./schema"));
+if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is not set. Please create a .env file from .env.example and fill in your database credentials.");
+}
+const pool = new pg_1.Pool({ connectionString: process.env.DATABASE_URL });
+exports.db = (0, node_postgres_1.drizzle)(pool, { schema });
+__exportStar(require("./schema"), exports);
 //# sourceMappingURL=index.js.map
