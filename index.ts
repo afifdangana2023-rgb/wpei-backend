@@ -1,18 +1,8 @@
-import { Router } from "express";
-import healthRouter from "./health";
-import statsRouter from "./stats";
-import membershipRouter from "./membership";
-import volunteersRouter from "./volunteers";
-import contactRouter from "./contact";
-import newsletterRouter from "./newsletter";
+import "dotenv/config";
+import app from "./app";
 
-const router = Router();
+const PORT = parseInt(process.env.PORT ?? "3000", 10);
 
-router.use(healthRouter);
-router.use(statsRouter);
-router.use(membershipRouter);
-router.use(volunteersRouter);
-router.use(contactRouter);
-router.use(newsletterRouter);
-
-export default router;
+app.listen(PORT, () => {
+  console.log(`[WPEI API] Server listening on port ${PORT}`);
+});
